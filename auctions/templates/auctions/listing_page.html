@@ -21,7 +21,8 @@
     {% endif %}
     <img src="{{item.image.url}}"><br>
     {{ item.description }}<br>
-    Current bid: ${{item.price}} <br>
+    Price: ${{item.price}} <br>
+    Current Bid: ${{current_bid}}
     <form action="{% url 'listing_page' name %}" method="post">
         {% csrf_token %}
         {{ form }}

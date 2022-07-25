@@ -8,7 +8,7 @@
                 <img src="{{auctions.image.url}}">
                 <a href="{% url 'listing_page' auctions%}">{{auctions}}</a> <br>
                 Description: {{auctions.description}} <br>
-                Starting_bid: ${{auctions.price}} <br>
+                Price: ${{auctions.price}} <br>
             </li>
             {% endfor %}
         </ul>
