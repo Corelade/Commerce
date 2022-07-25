@@ -138,59 +138,80 @@ def listing_page(request, name):
                         'message': 'Bid must be higher than price'
                     })
     else:
-        if request.user.id == item.user_id:
-            try:
-                new_bid = Bid.objects.get(auction_listing_id=item.id)
+        if item.is_closed is False:
+            if request.user.id == item.user_id:
+                try:
+                    new_bid = Bid.objects.get(auction_listing_id=item.id)
+                    return render(request, 'auctions/listing_page.html', {
+                        'name': name,
+                        'item': item,
+                        'close': 'Close',
+                        'current_bid': new_bid.new_bid,
+                    })
+                except:
+                    return render(request, 'auctions/listing_page.html', {
+                        'name': name,
+                        'item': item,
+                        'close': 'Close',
+                    })
+            else:
+                try:
+                    new_bid = Bid.objects.get(auction_listing_id=item.id)
+                    form = BidForm(initial={'place_bid': new_bid.new_bid + 1})
+                    if item_name not in watchlist_content:
+                        return render(request, 'auctions/listing_page.html', {
+                            'name': name,
+                            'item': item,
+                            'watchlist': 'Add To Watchlist',
+                            'current_bid': new_bid.new_bid,
+                            'form': form,
+                        })
+                    else:
+                        return render(request, 'auctions/listing_page.html', {
+                            'name': name,
+                            'item': item,
+                            'remove': 'Remove From Watchlist',
+                            'current_bid': new_bid.new_bid,
+                            'form': form,
+                        })
+
+                except:
+                    form = BidForm(initial={'place_bid': item.price + 1})
+                    if item_name not in watchlist_content:
+                        return render(request, 'auctions/listing_page.html', {
+                            'name': name,
+                            'item': item,
+                            'watchlist': 'Add To Watchlist',
+                            'form': form
+                        })
+                    else:
+                        return render(request, 'auctions/listing_page.html', {
+                            'name': name,
+                            'item': item,
+                            'remove': 'Remove From Watchlist',
+                            'form': form
+                        })
+        else:
+            new_bid = Bid.objects.get(auction_listing_id=item.id)
+            if request.user.id == item.user_id:
                 return render(request, 'auctions/listing_page.html', {
                     'name': name,
                     'item': item,
-                    'close': 'Close',
+                    'message': "You've closed this auction",
                     'current_bid': new_bid.new_bid,
                 })
-            except:
+            elif request.user.id == new_bid.user_id:
                 return render(request, 'auctions/listing_page.html', {
                     'name': name,
                     'item': item,
-                    'close': 'Close',
+                    'message': "Congratulations!!! You won this auction!"
                 })
-        else:
-            try:
-                new_bid = Bid.objects.get(auction_listing_id=item.id)
-                form = BidForm(initial={'place_bid': new_bid.new_bid + 1})
-                if item_name not in watchlist_content:
-                    return render(request, 'auctions/listing_page.html', {
-                        'name': name,
-                        'item': item,
-                        'watchlist': 'Add To Watchlist',
-                        'current_bid': new_bid.new_bid,
-                        'form': form,
-                    })
-                else:
-                    return render(request, 'auctions/listing_page.html', {
-                        'name': name,
-                        'item': item,
-                        'remove': 'Remove From Watchlist',
-                        'current_bid': new_bid.new_bid,
-                        'form': form,
-                    })
-
-            except:
-                form = BidForm(initial={'place_bid': item.price + 1})
-                if item_name not in watchlist_content:
-                    return render(request, 'auctions/listing_page.html', {
-                        'name': name,
-                        'item': item,
-                        'watchlist': 'Add To Watchlist',
-                        'form': form
-                    })
-                else:
-                    return render(request, 'auctions/listing_page.html', {
-                        'name': name,
-                        'item': item,
-                        'remove': 'Remove From Watchlist',
-                        'form': form
-                    })
-
+            else:
+                return render(request, 'auctions/listing_page.html', {
+                    'name': name,
+                    'item': item,
+                    'message': 'This auction has been closed',
+                })
 
 def add_to_watchlist(request, name):
     item = AuctionListings.objects.get(item_name=name)
@@ -209,3 +230,10 @@ def remove(request, name):
     return HttpResponseRedirect(reverse(listing_page, args=[name]))
     # I might need to refine this. Firstly, i want to add a 'is_closed' field to the Watchlist model so if
     # any saved_item has been deleted, it wont show on the watchlist but will still be saved in the database
+
+
+def close(request, name):
+    item = AuctionListings.objects.get(item_name=name)
+    item.is_closed = True
+    item.save()
+    return HttpResponseRedirect(reverse(listing_page, args=[name]))
