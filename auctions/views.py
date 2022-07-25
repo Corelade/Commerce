@@ -9,7 +9,7 @@ from .models import *
 
 def index(request):
     return render(request, "auctions/index.html", {
-        'auction_listings': AuctionListings.objects.all()
+        'auction_listings': AuctionListings.objects.filter(is_closed=False)
     })
 
 
@@ -101,6 +101,9 @@ def create_listing(request):
 class BidForm(forms.Form):
     place_bid = forms.IntegerField(min_value=0)
 
+class CommentForm(forms.Form):
+    comment = forms.CharField(widget=forms.Textarea(attrs={'rows': 4, 'cols': 40}))
+
 
 def listing_page(request, name):
     item = AuctionListings.objects.get(item_name=name)
@@ -147,12 +150,16 @@ def listing_page(request, name):
                         'item': item,
                         'close': 'Close',
                         'current_bid': new_bid.new_bid,
+                        'comment_form': CommentForm(),
+                        'comments': Comment.objects.filter(auction_listing_id=item.id)
                     })
                 except:
                     return render(request, 'auctions/listing_page.html', {
                         'name': name,
                         'item': item,
                         'close': 'Close',
+                        'comment_form': CommentForm(),
+                        'comments': Comment.objects.filter(auction_listing_id=item.id)
                     })
             else:
                 try:
@@ -165,6 +172,8 @@ def listing_page(request, name):
                             'watchlist': 'Add To Watchlist',
                             'current_bid': new_bid.new_bid,
                             'form': form,
+                            'comment_form': CommentForm(),
+                            'comments': Comment.objects.filter(auction_listing_id=item.id)
                         })
                     else:
                         return render(request, 'auctions/listing_page.html', {
@@ -173,6 +182,8 @@ def listing_page(request, name):
                             'remove': 'Remove From Watchlist',
                             'current_bid': new_bid.new_bid,
                             'form': form,
+                            'comment_form': CommentForm(),
+                            'comments': Comment.objects.filter(auction_listing_id=item.id)
                         })
 
                 except:
@@ -182,14 +193,18 @@ def listing_page(request, name):
                             'name': name,
                             'item': item,
                             'watchlist': 'Add To Watchlist',
-                            'form': form
+                            'form': form,
+                            'comment_form': CommentForm(),
+                            'comments': Comment.objects.filter(auction_listing_id=item.id)
                         })
                     else:
                         return render(request, 'auctions/listing_page.html', {
                             'name': name,
                             'item': item,
                             'remove': 'Remove From Watchlist',
-                            'form': form
+                            'form': form,
+                            'comment_form': CommentForm(),
+                            'comments': Comment.objects.filter(auction_listing_id=item.id)
                         })
         else:
             new_bid = Bid.objects.get(auction_listing_id=item.id)
@@ -199,18 +214,23 @@ def listing_page(request, name):
                     'item': item,
                     'message': "You've closed this auction",
                     'current_bid': new_bid.new_bid,
+                    'comment_form': CommentForm()
                 })
             elif request.user.id == new_bid.user_id:
                 return render(request, 'auctions/listing_page.html', {
                     'name': name,
                     'item': item,
-                    'message': "Congratulations!!! You won this auction!"
+                    'current_bid': new_bid.new_bid,
+                    'message': "Congratulations!!! You won this auction!",
+                    'comment_form': CommentForm()
                 })
             else:
                 return render(request, 'auctions/listing_page.html', {
                     'name': name,
                     'item': item,
+                    'current_bid': new_bid.new_bid,
                     'message': 'This auction has been closed',
+                    'comment_form': CommentForm()
                 })
 
 def add_to_watchlist(request, name):
@@ -237,3 +257,23 @@ def close(request, name):
     item.is_closed = True
     item.save()
     return HttpResponseRedirect(reverse(listing_page, args=[name]))
+
+
+def comment(request, name):
+    item = AuctionListings.objects.get(item_name=name)
+    if request.method == 'POST':
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            comment = form.cleaned_data['comment']
+            comment = Comment(user=request.user, auction_listing_id=item.id, comment=comment)
+            comment.save()
+            return HttpResponseRedirect(reverse(listing_page, args=[name]))
+        else:
+            new_bid = Bid.objects.get(auction_listing_id=item.id)
+            return render(request, 'auctions/listing_page.html', {
+                'name': name,
+                'item': item,
+                'current_bid': new_bid.new_bid,
+                'comment_form': CommentForm(),
+            })
+

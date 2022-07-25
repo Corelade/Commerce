@@ -44,3 +44,11 @@ class Bid(models.Model):
 
     def __str__(self):
         return self.new_bid
+
+class Comment(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    auction_listing = models.ForeignKey(AuctionListings, on_delete=models.CASCADE)
+    comment = models.CharField(max_length=300, blank=True)
+
+    def __str__(self):
+        return self.comment

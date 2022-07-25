@@ -5,7 +5,6 @@
 {% endblock %}
 
 {% block body %}
-    {{name}} <br>
 
     {% if watchlist %}
         <a href="{% url 'add_to_watchlist' name %}">
@@ -25,21 +24,46 @@
         </a> <br>
     {% endif %}
 
+    {{name}} <br>
+
     <img src="{{item.image.url}}"><br>
     {{ item.description }}<br>
     Price: ${{item.price}} <br>
 
     {% if current_bid %}
-        Current Bid: ${{current_bid}}
+        Current Bid: ${{current_bid}} <br>
     {% endif %}
 
-    <form action="{% url 'listing_page' name %}" method="post">
-        {% csrf_token %}
-        {{ form }}
-        <input type="submit">
-    </form>
+    {% if form %}
+        <form action="{% url 'listing_page' name %}" method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <input type="submit">
+        </form>
+    {% endif %}
 
     {% if message %}
         {{message}} <!-- Maybe style this red, Like an error message -->
     {% endif %}
+
+    {% if comment_form %}
+        <form action="{% url 'comment' name %}" method="post">
+            {% csrf_token %}
+            {{comment_form.as_p}}
+            <input type="submit">
+        </form>
+    {% endif %}
+
+    {% if comments %}
+        <ul>
+            {% for comment in comments %}
+                <li>
+                    {{comment}}
+                </li>
+            {% empty %}
+                None
+            {% endfor %}
+        </ul>
+    {% endif %}
+
 {% endblock %}
