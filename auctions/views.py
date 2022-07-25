@@ -139,11 +139,20 @@ def listing_page(request, name):
                     })
     else:
         if request.user.id == item.user_id:
-            return render(request, 'auctions/listing_page.html', {
-                'name': name,
-                'item': item,
-                'close': 'Close'
-            })
+            try:
+                new_bid = Bid.objects.get(auction_listing_id=item.id)
+                return render(request, 'auctions/listing_page.html', {
+                    'name': name,
+                    'item': item,
+                    'close': 'Close',
+                    'current_bid': new_bid.new_bid,
+                })
+            except:
+                return render(request, 'auctions/listing_page.html', {
+                    'name': name,
+                    'item': item,
+                    'close': 'Close',
+                })
         else:
             try:
                 new_bid = Bid.objects.get(auction_listing_id=item.id)

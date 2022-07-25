@@ -16,6 +16,7 @@ class AuctionListings(models.Model):
     price = models.IntegerField(default=0)
     category = models.ForeignKey('Category', on_delete=models.CASCADE)
     image = models.ImageField(upload_to='images/', blank=True)
+    is_closed = models.BooleanField(default=False)
 
     def __str__(self):
         return self.item_name

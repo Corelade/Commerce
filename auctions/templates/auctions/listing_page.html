@@ -17,12 +17,16 @@
         </a>
     {% endif %}
     {% if close %}
-        {{close}} <br>
+        <a href="#">
+            {{close}}
+        </a> <br>
     {% endif %}
     <img src="{{item.image.url}}"><br>
     {{ item.description }}<br>
     Price: ${{item.price}} <br>
+    {% if current_bid %}
     Current Bid: ${{current_bid}}
+    {% endif %}
     <form action="{% url 'listing_page' name %}" method="post">
         {% csrf_token %}
         {{ form }}
