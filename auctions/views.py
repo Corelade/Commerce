@@ -297,6 +297,7 @@ def category(request):
 def category_auctions(request, category):
     category_id = Category.objects.get(category=category).id
     return render(request, 'auctions/category_auctions.html', {
-        'category_auctions': AuctionListings.objects.filter(category_id=category_id, is_closed=False)
+        'category_auctions': AuctionListings.objects.filter(category_id=category_id, is_closed=False),
+        'category': category
     })
 
