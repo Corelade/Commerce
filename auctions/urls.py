@@ -13,4 +13,5 @@ urlpatterns = [
     path("<str:name>/remove", views.remove, name="remove"),
     path("<str:name>/close", views.close, name="close"),
     path("<str:name>/comment", views.comment, name="comment"),
+    path("watchlist", views.watchlist, name="watchlist"),
 ]

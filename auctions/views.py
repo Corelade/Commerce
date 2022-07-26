@@ -70,7 +70,7 @@ class CreateForm(forms.Form):
     category = forms.CharField(max_length=30)
     image = forms.ImageField(required=False)
     description = forms.CharField(required=False, widget=forms.Textarea(attrs={'rows': 4, 'cols': 40}))
-    starting_bid = forms.IntegerField(min_value=0)
+    price = forms.IntegerField(min_value=0)
 
 
 def create_listing(request):
@@ -81,18 +81,17 @@ def create_listing(request):
             category = form.cleaned_data['category']
             image = form.cleaned_data['image']
             description = form.cleaned_data['description']
-            starting_bid = form.cleaned_data['starting_bid']
+            price = form.cleaned_data['price']
             category = Category(category=category)
             category.save()
             listing = AuctionListings(user=request.user, item_name=item_name, description=description,
-                                      starting_bid=starting_bid, category=category, image=image)
+                                      price=price, category=category, image=image)
             listing.save()
             return HttpResponseRedirect(reverse(index))
         else:
             return render(request, 'auctions/create_listing.html', {
                 'form': CreateForm(request.POST)
             })
-
     return render(request, 'auctions/create_listing.html', {
         'form': CreateForm()
     })
@@ -277,3 +276,5 @@ def comment(request, name):
                 'comment_form': CommentForm(),
             })
 
+def watchlist(request):
+    pass

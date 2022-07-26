@@ -26,7 +26,9 @@
 
     {{name}} <br>
 
-    <img src="{{item.image.url}}"><br>
+    {% if item.image %}
+        <img src="{{item.image.url}}" alt="{{item.item_name}}"><br>
+    {% endif %}
     {{ item.description }}<br>
     Price: ${{item.price}} <br>
 

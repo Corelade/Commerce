@@ -5,5 +5,13 @@
 {% endblock %}
 
 {% block body %}
-    Yes
+    <ul>
+        {% for item in watchlist%}
+            <li>
+                {{item}}
+            </li>
+        {% empty %}
+            No Item has been added to your Watchlist
+        {% endfor %}
+    </ul>
 {% endblock %}

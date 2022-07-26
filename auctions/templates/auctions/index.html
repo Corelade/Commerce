@@ -5,7 +5,9 @@
         <ul>
             {% for auctions in auction_listings %}
             <li>
-                <img src="{{auctions.image.url}}">
+                {% if auctions.image %}
+                    <img src="{{auctions.image.url}}" alt="{{auctions.item_name}}">
+                {% endif %}
                 <a href="{% url 'listing_page' auctions%}">{{auctions}}</a> <br>
                 Description: {{auctions.description}} <br>
                 Price: ${{auctions.price}} <br>
