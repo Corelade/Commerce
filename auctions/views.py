@@ -4,6 +4,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 from django import forms
+from django.contrib.auth.decorators import login_required
 from .models import *
 
 
@@ -108,7 +109,7 @@ class BidForm(forms.Form):
 class CommentForm(forms.Form):
     comment = forms.CharField(widget=forms.Textarea(attrs={'rows': 4, 'cols': 40}))
 
-
+@login_required(login_url='/auctions/login')
 def listing_page(request, name):
     item = AuctionListings.objects.get(item_name=name)
     item_name = item.item_name
