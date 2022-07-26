@@ -82,8 +82,12 @@ def create_listing(request):
             image = form.cleaned_data['image']
             description = form.cleaned_data['description']
             price = form.cleaned_data['price']
-            category = Category(category=category)
-            category.save()
+            category_list = [category.category for category in Category.objects.all()]
+            if category not in category_list:
+                category = Category(category=category)
+                category.save()
+            else:
+                category = Category.objects.get(category=category)
             listing = AuctionListings(user=request.user, item_name=item_name, description=description,
                                       price=price, category=category, image=image)
             listing.save()
@@ -99,6 +103,7 @@ def create_listing(request):
 
 class BidForm(forms.Form):
     place_bid = forms.IntegerField(min_value=0)
+
 
 class CommentForm(forms.Form):
     comment = forms.CharField(widget=forms.Textarea(attrs={'rows': 4, 'cols': 40}))
@@ -232,6 +237,7 @@ def listing_page(request, name):
                     'comment_form': CommentForm()
                 })
 
+
 def add_to_watchlist(request, name):
     item = AuctionListings.objects.get(item_name=name)
     item_name = item.item_name
@@ -276,5 +282,14 @@ def comment(request, name):
                 'comment_form': CommentForm(),
             })
 
+
 def watchlist(request):
-    pass
+    return render(request, 'auctions/watchlist.html', {
+        'watchlist': Watchlist.objects.filter(user_id=request.user.id)
+    })
+
+
+def category(request):
+    return render(request, 'auctions/category.html', {
+        'categories': Category.objects.all()
+    })

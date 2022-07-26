@@ -8,7 +8,9 @@
     <ul>
         {% for item in watchlist%}
             <li>
-                {{item}}
+                <a href="{% url 'listing_page' item %}">
+                    {{item}}
+                </a>
             </li>
         {% empty %}
             No Item has been added to your Watchlist
