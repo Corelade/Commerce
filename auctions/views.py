@@ -156,7 +156,8 @@ def listing_page(request, name):
                         'close': 'Close',
                         'current_bid': new_bid.new_bid,
                         'comment_form': CommentForm(),
-                        'comments': Comment.objects.filter(auction_listing_id=item.id)
+                        'comments': Comment.objects.filter(auction_listing_id=item.id),
+                        'users': User.objects.all()
                     })
                 except:
                     return render(request, 'auctions/listing_page.html', {
@@ -164,7 +165,8 @@ def listing_page(request, name):
                         'item': item,
                         'close': 'Close',
                         'comment_form': CommentForm(),
-                        'comments': Comment.objects.filter(auction_listing_id=item.id)
+                        'comments': Comment.objects.filter(auction_listing_id=item.id),
+                        'users': User.objects.all()
                     })
             else:
                 try:
@@ -178,7 +180,8 @@ def listing_page(request, name):
                             'current_bid': new_bid.new_bid,
                             'form': form,
                             'comment_form': CommentForm(),
-                            'comments': Comment.objects.filter(auction_listing_id=item.id)
+                            'comments': Comment.objects.filter(auction_listing_id=item.id),
+                            'users': User.objects.all()
                         })
                     else:
                         return render(request, 'auctions/listing_page.html', {
@@ -188,9 +191,9 @@ def listing_page(request, name):
                             'current_bid': new_bid.new_bid,
                             'form': form,
                             'comment_form': CommentForm(),
-                            'comments': Comment.objects.filter(auction_listing_id=item.id)
+                            'comments': Comment.objects.filter(auction_listing_id=item.id),
+                            'users': User.objects.all()
                         })
-
                 except:
                     form = BidForm(initial={'place_bid': item.price + 1})
                     if item_name not in watchlist_content:
@@ -200,7 +203,8 @@ def listing_page(request, name):
                             'watchlist': 'Add To Watchlist',
                             'form': form,
                             'comment_form': CommentForm(),
-                            'comments': Comment.objects.filter(auction_listing_id=item.id)
+                            'comments': Comment.objects.filter(auction_listing_id=item.id),
+                            'users': User.objects.all()
                         })
                     else:
                         return render(request, 'auctions/listing_page.html', {
@@ -209,7 +213,8 @@ def listing_page(request, name):
                             'remove': 'Remove From Watchlist',
                             'form': form,
                             'comment_form': CommentForm(),
-                            'comments': Comment.objects.filter(auction_listing_id=item.id)
+                            'comments': Comment.objects.filter(auction_listing_id=item.id),
+                            'users': User.objects.all()
                         })
         else:
             new_bid = Bid.objects.get(auction_listing_id=item.id)
@@ -254,8 +259,6 @@ def remove(request, name):
     item_id = item.id
     Watchlist.objects.get(item_name_id=item_id).delete()
     return HttpResponseRedirect(reverse(listing_page, args=[name]))
-    # I might need to refine this. Firstly, i want to add a 'is_closed' field to the Watchlist model so if
-    # any saved_item has been deleted, it wont show on the watchlist but will still be saved in the database
 
 
 def close(request, name):
@@ -288,7 +291,6 @@ def watchlist(request):
     return render(request, 'auctions/watchlist.html', {
         'watchlist': Watchlist.objects.filter(user_id=request.user.id)
     })
-
 
 def category(request):
     return render(request, 'auctions/category.html', {

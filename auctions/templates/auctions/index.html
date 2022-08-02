@@ -1,17 +1,29 @@
 {% extends "auctions/layout.html" %}
 
 {% block body %}
-    <h2>Active Listings</h2>
-        <ul>
-            {% for auctions in auction_listings %}
-            <li>
-                {% if auctions.image %}
-                    <img src="{{auctions.image.url}}" alt="{{auctions.item_name}}">
-                {% endif %}
-                <a href="{% url 'listing_page' auctions%}">{{auctions}}</a> <br>
-                Description: {{auctions.description}} <br>
-                Price: ${{auctions.price}} <br>
-            </li>
-            {% endfor %}
-        </ul>
+    <h2 class="listing-page">
+        Active Listings
+    </h2>
+        <div class="listings">
+            <ul class="listing-nav">
+                {% for auctions in auction_listings %}
+                    <li class="listing-item">
+                        <p class="listing-item_name">
+                            <a class="nav-link" href="{% url 'listing_page' auctions%}">
+                                {{auctions}}
+                            </a>
+                        </p>
+                        {% if auctions.image %}
+                            <img src="{{auctions.image.url}}" alt="{{auctions.item_name}}" class="listing-img">
+                        {% endif %}
+                        <br>
+                        <div class="listing-price">
+                        <!--Description:--> {{auctions.description}} <br>
+                        
+                            Price: ${{auctions.price}}
+                        </div>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
 {% endblock %}

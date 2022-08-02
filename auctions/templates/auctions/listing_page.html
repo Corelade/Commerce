@@ -57,11 +57,20 @@
     {% endif %}
 
     {% if comments %}
+        Comments
         <ul>
             {% for comment in comments %}
-                <li>
-                    {{comment}}
-                </li>
+                {% for user in users %}
+                    {% if user.id == comment.user_id and user.id == request.user.id %}
+                        <li>
+                            <!--{{user}}--> Me : {{comment}}
+                        </li>
+                    {% elif user.id == comment.user_id %}
+                        <li>
+                            {{user}}: {{comment}}
+                        </li>
+                    {% endif %}
+                {% endfor %}
             {% empty %}
                 None
             {% endfor %}
