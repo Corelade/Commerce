@@ -45,7 +45,7 @@
     {% endif %}
 
     {% if message %}
-        {{message}} <!-- Maybe style this red, Like an error message -->
+        {{message}}
     {% endif %}
 
     {% if comment_form %}
@@ -63,7 +63,7 @@
                 {% for user in users %}
                     {% if user.id == comment.user_id and user.id == request.user.id %}
                         <li>
-                            <!--{{user}}--> Me : {{comment}}
+                            Me : {{comment}}
                         </li>
                     {% elif user.id == comment.user_id %}
                         <li>

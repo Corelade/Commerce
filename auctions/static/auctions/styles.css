@@ -10,6 +10,7 @@ body {
     margin: 0px;
     padding: 0px;    
     text-align: right;
+    background-color: black;
 }
 .nav-item{
     display: inline;
@@ -20,7 +21,7 @@ body {
     padding: 10px;
 }
 .nav-link:hover{
-    color: red;
+    background-color: rgb(95, 67, 67);
 }
 .listings{
     padding-left: 130px;
@@ -32,6 +33,9 @@ body {
     to{
         left: 40%;
     }
+}
+.listing-bcg{
+    background-color: rgb(138, 128, 128);
 }
 .listing-page{
     position: relative;
