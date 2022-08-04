@@ -3,7 +3,8 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path("", views.index, name="index"),
+    path('', views.index, name='index'),
+    path("home", views.home, name="home"),
     path("login", views.login_view, name="login"),
     path("logout", views.logout_view, name="logout"),
     path("register", views.register, name="register"),
@@ -14,6 +15,6 @@ urlpatterns = [
     path("<str:name>/close", views.close, name="close"),
     path("<str:name>/comment", views.comment, name="comment"),
     path("watchlist", views.watchlist, name="watchlist"),
-    path("category", views.category, name="category"),
-    path("<str:category>/category_auctions", views.category_auctions, name="category_auctions"),
+    path("categories", views.category, name="category"),
+    path("<str:category>", views.category_auctions, name="category_auctions"),
 ]

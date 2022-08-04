@@ -10,7 +10,7 @@
             {% for auctions in category_auctions %}
                 <li class="listing-item">
                     <p class="listing-item_name">
-                        <a class="nav-link" href="{% url 'listing_page' auctions%}">
+                        <a class="item-link" href="{% url 'listing_page' auctions%}">
                             {{auctions}}
                         </a>
                     </p>

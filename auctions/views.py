@@ -9,7 +9,12 @@ from .models import *
 
 
 def index(request):
-    return render(request, "auctions/index.html", {
+    return render(request, 'auctions/index.html')
+
+
+@login_required(login_url='/auctions/login.html')
+def home(request):
+    return render(request, "auctions/home.html", {
         'auction_listings': AuctionListings.objects.filter(is_closed=False)
     })
 
@@ -25,7 +30,7 @@ def login_view(request):
         # Check if authentication successful
         if user is not None:
             login(request, user)
-            return HttpResponseRedirect(reverse("index"))
+            return HttpResponseRedirect(reverse("home"))
         else:
             return render(request, "auctions/login.html", {
                 "message": "Invalid username and/or password."
@@ -36,7 +41,7 @@ def login_view(request):
 
 def logout_view(request):
     logout(request)
-    return HttpResponseRedirect(reverse("index"))
+    return HttpResponseRedirect(reverse("login"))
 
 
 def register(request):
@@ -61,7 +66,7 @@ def register(request):
                 "message": "Username already taken."
             })
         login(request, user)
-        return HttpResponseRedirect(reverse("index"))
+        return HttpResponseRedirect(reverse("home"))
     else:
         return render(request, "auctions/register.html")
 
@@ -73,7 +78,7 @@ class CreateForm(forms.Form):
     description = forms.CharField(required=False, widget=forms.Textarea(attrs={'rows': 4, 'cols': 40}))
     price = forms.IntegerField(min_value=0)
 
-
+@login_required(login_url='/auctions/login.html')
 def create_listing(request):
     if request.method == 'POST':
         form = CreateForm(request.POST, request.FILES)
@@ -92,7 +97,7 @@ def create_listing(request):
             listing = AuctionListings(user=request.user, item_name=item_name, description=description,
                                       price=price, category=category, image=image)
             listing.save()
-            return HttpResponseRedirect(reverse(index))
+            return HttpResponseRedirect(reverse(home))
         else:
             return render(request, 'auctions/create_listing.html', {
                 'form': CreateForm(request.POST)
@@ -243,7 +248,7 @@ def listing_page(request, name):
                     'comment_form': CommentForm()
                 })
 
-
+@login_required(login_url='/auctions/login.html')
 def add_to_watchlist(request, name):
     item = AuctionListings.objects.get(item_name=name)
     item_name = item.item_name
@@ -286,17 +291,21 @@ def comment(request, name):
                 'comment_form': CommentForm(),
             })
 
-
+@login_required(login_url='/auctions/login.html')
 def watchlist(request):
     return render(request, 'auctions/watchlist.html', {
         'watchlist': Watchlist.objects.filter(user_id=request.user.id)
     })
 
+
+@login_required(login_url='/auctions/login.html')
 def category(request):
     return render(request, 'auctions/category.html', {
         'categories': Category.objects.all()
-    })
-
+    }
+    
+    )
+@login_required(login_url='/auctions/login.html')
 def category_auctions(request, category):
     category_id = Category.objects.get(category=category).id
     return render(request, 'auctions/category_auctions.html', {
