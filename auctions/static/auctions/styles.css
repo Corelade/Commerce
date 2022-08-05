@@ -33,6 +33,7 @@ body {
 .listings{
     /**padding:0px 130px;**/
     border: 1px solid red;
+    padding-left: 15px;
 }
 @keyframes anime {
     0%{
@@ -63,8 +64,10 @@ body {
 }
 .listing-item{
     margin:10px 70px;
-    border: 1px solid blue;
-    background-color: rgb(66, 62, 62);
+    background-color: rgba(150, 105, 105, 0.491);
+}
+.listing-item:hover{
+    box-shadow: rgb(124, 103, 103);
 }
 .listing-img{
     width: 200px;
