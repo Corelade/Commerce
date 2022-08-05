@@ -31,7 +31,8 @@ body {
     color: rgb(167, 148, 120);
 }
 .listings{
-    padding-left: 130px;
+    /**padding:0px 130px;**/
+    border: 1px solid red;
 }
 @keyframes anime {
     0%{
@@ -61,7 +62,9 @@ body {
     flex-wrap: wrap;
 }
 .listing-item{
-    margin-right: 80px;
+    margin:10px 70px;
+    border: 1px solid blue;
+    background-color: rgb(66, 62, 62);
 }
 .listing-img{
     width: 200px;
