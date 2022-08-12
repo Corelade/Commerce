@@ -1,34 +1,78 @@
 {% extends 'auctions/layout.html' %}
+{% load static %}
 
 {% block title %}
     {{name}}
 {% endblock %}
 
+{% block script %}
+    <script src="https://checkout.flutterwave.com/v3.js"></script>
+
+    <script>
+        let myemail = '{{user.email}}'
+        let myname = '{{user.username}}'
+        let amount = '{{current_bid}}'
+        let tx_ref = '{{tx_ref}}'
+        
+        document.addEventListener('DOMContentLoaded', function(){
+            document.querySelector('#checkout_button').onclick = ()=>makepayment();
+        });
+
+        function makepayment(){
+            FlutterwaveCheckout({
+                public_key: 'FLWPUBK_TEST-2211f08d79da087168071ea3f99f1765-X',
+                tx_ref : tx_ref,
+                amount : amount,
+                currency : 'NGN',
+                payment_options: "card, mobilemoneyghana, ussd",
+                redirect_url: "{% url 'index' %}",
+                customer : {
+                    email : myemail,
+                    name: myname,
+                },
+            })
+        }
+    </script>
+    
+{% endblock %}
+
 {% block body %}
 
-    {% if watchlist %}
-        <a href="{% url 'add_to_watchlist' name %}">
-            {{watchlist}} <br>
-        </a>
-    {% endif %}
+    <div id="conditions">
+        <div class="cond-1">
+            {% if watchlist %}
+                <a class="item-link" href="{% url 'add_to_watchlist' name %}">
+                    {{watchlist}}
+                </a>
+            {% endif %}
+        </div>
 
-    {% if remove %}
-        <a href="{% url 'remove' name %}">
-            {{remove}} <br>
-        </a>
-    {% endif %}
+        <div class="cond-1">
+            {% if remove %}
+                <a class="item-link" href="{% url 'remove' name %}">
+                    {{remove}}
+                </a>
+            {% endif %}
+        </div>
 
-    {% if close %}
-        <a href="{% url 'close' name %}">
-            {{close}}
-        </a> <br>
-    {% endif %}
+        <div class="cond-1">
+            {% if close %}
+                <a class="item-link" href="{% url 'close' name %}" id="close-link">
+                    {{close}}
+                </a>
+            {% endif %}
+        </div>
+        
 
-    {{name}} <br>
+        <h3> {{name}} </h3>
+    </div>  
 
     {% if item.image %}
-        <img src="{{item.image.url}}" alt="{{item.item_name}}"><br>
+        <div id="immg">
+            <img id="pic" src="{{item.image.url}}" alt="{{item.item_name}}">
+        </div>
     {% endif %}
+
     {{ item.description }}<br>
     Price: ${{item.price}} <br>
 
@@ -40,12 +84,24 @@
         <form action="{% url 'listing_page' name %}" method="post">
             {% csrf_token %}
             {{ form.as_p }}
-            <input type="submit">
+            <input type="submit" id="bid_button">
         </form>
     {% endif %}
 
+    <!--<div id="countdown">
+
+    </div>-->
+
     {% if message %}
         {{message}}
+    {% endif %}
+
+    {% if success_button %}
+        <div>
+            <button id="checkout_button">
+                {{success_button}}
+            </button>
+        </div>
     {% endif %}
 
     {% if comment_form %}
@@ -75,6 +131,7 @@
                 None
             {% endfor %}
         </ul>
+
     {% endif %}
 
 {% endblock %}

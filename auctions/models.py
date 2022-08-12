@@ -53,3 +53,12 @@ class Comment(models.Model):
     def __str__(self):
         return self.comment
 
+class TransactionReference(models.Model):
+    user = models.ForeignKey(User, on_delete= models.CASCADE)  
+    trx_ref = models.CharField(max_length= 40)
+    auctionlistings = models.ForeignKey(AuctionListings, on_delete=models.CASCADE)
+    bid = models.ForeignKey(Bid, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.auctionlistings.item_name
+        

@@ -5,6 +5,8 @@ from django.shortcuts import render
 from django.urls import reverse
 from django import forms
 from django.contrib.auth.decorators import login_required
+import string
+import random
 from .models import *
 
 
@@ -72,11 +74,12 @@ def register(request):
 
 
 class CreateForm(forms.Form):
-    item_name = forms.CharField(max_length=30)
-    category = forms.CharField(max_length=30)
+    item_name = forms.CharField(max_length=30, widget=forms.TextInput(attrs={'placeholder': 'Item Name'}))
+    category = forms.CharField(max_length=30, widget=forms.TextInput(attrs={'placeholder': 'Category'}))
+    price = forms.IntegerField(min_value=0, widget=forms.TextInput(attrs={'placeholder': 'Price'}))
+    description = forms.CharField(required=False, widget=forms.Textarea(attrs={'rows': 2, 'cols': 30, 'placeholder': 'Description'}))
     image = forms.ImageField(required=False)
-    description = forms.CharField(required=False, widget=forms.Textarea(attrs={'rows': 4, 'cols': 40}))
-    price = forms.IntegerField(min_value=0)
+
 
 @login_required(login_url='/auctions/login.html')
 def create_listing(request):
@@ -106,13 +109,16 @@ def create_listing(request):
         'form': CreateForm()
     })
 
+def transaction_reference():
+    str = ''.join(random.choice(string.ascii_letters + string.digits) for i in range(10)) 
+    return str
 
 class BidForm(forms.Form):
-    place_bid = forms.IntegerField(min_value=0)
+    place_bid = forms.IntegerField(min_value=0, widget=forms.TextInput(attrs={'class': 'form-control'}))
 
 
 class CommentForm(forms.Form):
-    comment = forms.CharField(widget=forms.Textarea(attrs={'rows': 4, 'cols': 40}))
+    comment = forms.CharField(widget=forms.Textarea(attrs={'rows': 4, 'cols': 40, 'class': 'form-control'}))
 
 @login_required(login_url='/auctions/login')
 def listing_page(request, name):
@@ -135,7 +141,10 @@ def listing_page(request, name):
                         'item': item,
                         'watchlist': 'Add To Watchlist',
                         'form': BidForm(request.POST),
-                        'message': 'Bid must be higher than previous bid'
+                        'message': 'Bid must be higher than previous bid',
+                        'comment_form': CommentForm(),
+                        'comments': Comment.objects.filter(auction_listing_id=item.id),
+                        'users': User.objects.all()
                     })
             except:
                 if new_bid > item.price:
@@ -148,7 +157,10 @@ def listing_page(request, name):
                         'item': item,
                         'watchlist': 'Add To Watchlist',
                         'form': BidForm(request.POST),
-                        'message': 'Bid must be higher than price'
+                        'message': 'Bid must be higher than price',
+                        'comment_form': CommentForm(),
+                        'comments': Comment.objects.filter(auction_listing_id=item.id),
+                        'users': User.objects.all()
                     })
     else:
         if item.is_closed is False:
@@ -232,12 +244,21 @@ def listing_page(request, name):
                     'comment_form': CommentForm()
                 })
             elif request.user.id == new_bid.user_id:
+                reference = transaction_reference()
+                try:
+                    ref = TransactionReference.objects.get(auctionlistings_id=item.id)
+                    ref = ref.trx_ref
+                except:
+                    ref = TransactionReference(user=request.user, auctionlistings_id=item.id, bid_id=new_bid.id, trx_ref=reference)
+                    ref.save()
                 return render(request, 'auctions/listing_page.html', {
                     'name': name,
                     'item': item,
                     'current_bid': new_bid.new_bid,
                     'message': "Congratulations!!! You won this auction!",
-                    'comment_form': CommentForm()
+                    'success_button': 'Proceed to checkout',
+                    'comment_form': CommentForm(),
+                    'tx_ref': ref,
                 })
             else:
                 return render(request, 'auctions/listing_page.html', {

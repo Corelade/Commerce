@@ -15,7 +15,7 @@
             {% for auctions in auction_listings %}
                 <li class="listing-item">
                     <p class="listing-item_name">
-                        <a class="item-link" href="{% url 'listing_page' auctions%}">
+                        <a class="item-link" href="{% url 'listing_page' auctions %}">
                             {{auctions}}
                         </a>
                     </p>
@@ -24,7 +24,7 @@
                     {% endif %}
                     <br>
                     <div class="listing-price">
-                    <!--Description:--> {{auctions.description}} <br>
+                    <!--Description: {{auctions.description}} <br>-->
                     
                         Price: ${{auctions.price}}
                     </div>

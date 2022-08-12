@@ -8,7 +8,7 @@
     <ul>
         {% for category in categories %}
             <li>
-                <a href="{% url 'category_auctions' category %}">
+                <a class="item-link" href="{% url 'category_auctions' category %}">
                     {{category}}
                 </a>
             </li>

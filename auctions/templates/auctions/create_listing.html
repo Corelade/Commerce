@@ -5,9 +5,11 @@
 {% endblock %}
 
 {% block body %}
-    <form action="{% url 'create_listing' %}" method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <input type="submit">
-    </form>
+    <div id="create_form">
+        <form action="{% url 'create_listing' %}" method="post" enctype="multipart/form-data" class="myform">
+            {% csrf_token %}
+            {{ form.as_p }} 
+            <input type="submit">
+        </form>
+    </div>
 {% endblock %}

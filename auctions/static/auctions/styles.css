@@ -9,25 +9,32 @@ body {
     float: left;
 }
 #user-txt{
+    padding-left: 10px;
     color: white;
 }
-.nav{
+#immg{
+    text-align: center;
+}
+#pic{
+    height: 300px;
+}
+.navs{
     list-style-type: none;
     margin: 0px;
     padding: 10px 0px;    
     text-align: right;
     background-color: rgb(124, 103, 103);
 }
-.nav-item{
+.navs-item{
     display: inline;
     margin-right: 10px;
 }
-.nav-link{
+.navs-link{
     text-decoration: none;
     padding: 10px;
     color: white;
 }
-.nav-link:hover{
+.navs-link:hover{
     color: rgb(167, 148, 120);
 }
 .listings{
@@ -35,7 +42,7 @@ body {
     /**border: 1px solid red;**/
     padding-left: 15px;
 }
-@keyframes anime {
+/**@keyframes anime {
     0%{
         left: 0%;
     }
@@ -45,15 +52,15 @@ body {
     100%{
         left: 43%;
     }
-}
+}**/
 
 .listing-page{
     position: relative;
-    animation-name: anime;
+   /** animation-name: anime;
     animation-duration: 6s;
-    animation-fill-mode: forwards;
+    animation-fill-mode: forwards;**/
     /**border: 1px solid red;**/
-    /**text-align: center;**/
+    text-align: center;
 }
 .listing-nav{
     list-style-type: none;
@@ -73,14 +80,17 @@ body {
 .listing-img{
     width: 200px;
     height: 150px;
-    margin: 0px 10px;
+    margin: 0px 0px;
 }
 .listing-item_name{
+    padding-top: 10px;
     text-align: center;
-    font-size: 20px;
+    font-size: 15px;
 }
 .listing-price{
     text-align: center;
+    padding-bottom: 10px;
+    padding-top: 10px;
 }
 .item-link{
     color: black;
@@ -88,4 +98,30 @@ body {
 }
 .item-link:hover{
     color: rgb(167, 148, 120);
+}
+
+.cond-1{
+    float: right;
+}
+#checkout_button{
+    border: 1px solid gray;
+}
+.myform{
+    text-align: center;
+    margin: 0 350px;
+    background-color: rgb(124, 103, 103);
+    padding: 20px;
+}
+.myform label{
+    display: none;
+}
+.myform input, textarea{
+    width: 100%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    display: block;
+    box-sizing: border-box;
+}
+#create_form{
+    padding: 20px;
 }
